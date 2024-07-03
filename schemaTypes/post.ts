@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineField, defineType, isDraft} from 'sanity'
 
 export default defineType({
   name: 'post',
@@ -49,17 +49,26 @@ export default defineType({
       title: 'Body',
       type: 'blockContent',
     }),
+    defineField({
+      name: 'isDraft',
+      title: 'Draft',
+      type: 'boolean',
+    }),
   ],
 
   preview: {
     select: {
       title: 'title',
+      isDraft: 'isDraft',
       author: 'author.name',
       media: 'mainImage',
     },
     prepare(selection) {
-      const {author} = selection
-      return {...selection, subtitle: author && `by ${author}`}
+      const {isDraft} = selection
+      return {
+        ...selection,
+        subtitle: isDraft ? 'Draft' : 'Published',
+      }
     },
   },
 })
